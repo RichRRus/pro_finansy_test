@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+    database:
+        image: postgres:latest
+        volumes:
+            - ./postgres_data:/var/lib/postgresql/data
+        env_file:
+            - .env
+        environment:
+            - "POSTGRES_DB=${DATABASE_DB}"
+            - "POSTGRES_USER=${DATABASE_USER}"
+            - "POSTGRES_PASSWORD=${DATABASE_PASSWORD}"
+        ports:
+            - "5432:5432"
+
+    app:
+        build:
+            context: app
+            dockerfile: Dockerfile
+            target: backend
+        volumes:
+            - ./app:/app
+        env_file:
+            - .env
+        ports:
+            - "8000:8000"
+        command: python manage.py runserver 0.0.0.0:8000
